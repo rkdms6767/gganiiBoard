@@ -1,6 +1,7 @@
 package gganii.board.article.repository;
 
-import kuke.board.article.entity.Article;
+import gganii.board.article.entity.Article;
+import gganii.board.article.service.response.ArticleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,22 +9,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Slf4j
 @SpringBootTest
-class ArticleRepositoryTest {
+public class ArticleRepositoryTest {
     @Autowired
-    ArticleRepository articleRepository;
+    private ArticleRepository articleRepository;
 
     @Test
-    void findAllTest() {
-        List<Article> articles = articleRepository.findAll(1L, 1499970L, 30L);
-        log.info("articles.size = {}", articles.size());
-        for (Article article : articles) {
-            log.info("article = {}", article);
+    void findAll() {
+        List<Article> articles = articleRepository.findAll(1L, 1499970L, 30L );
+        log.info("articles size: {}", articles.size());
+        for(Article article : articles) {
+            log.info("article: {}", article);
         }
+
+        List<ArticleResponse> responses = articles.stream().map(ArticleResponse::from).toList();
     }
+
 
     @Test
     void countTest() {
@@ -44,4 +46,5 @@ class ArticleRepositoryTest {
             log.info("articleId = {}", article.getArticleId());
         }
     }
+
 }

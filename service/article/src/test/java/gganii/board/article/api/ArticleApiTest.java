@@ -1,9 +1,11 @@
 package gganii.board.article.api;
 
-import kuke.board.article.service.response.ArticlePageResponse;
-import kuke.board.article.service.response.ArticleResponse;
+import gganii.board.article.service.request.ArticleCreateRequest;
+import gganii.board.article.service.response.ArticlePageResponse;
+import gganii.board.article.service.response.ArticleResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
@@ -29,50 +31,57 @@ public class ArticleApiTest {
                 .body(ArticleResponse.class);
     }
 
+
     @Test
-    void readTest() {
-        ArticleResponse response = read(121530268440289280L);
+    void readTest(){
+        ArticleResponse response = read(257042675579404288L);
         System.out.println("response = " + response);
     }
 
-    ArticleResponse read(Long articleId) {
+    ArticleResponse read(Long articleId){
         return restClient.get()
-                .uri("/v1/articles/{articleId}", articleId)
+                .uri("v1/articles/{articleid}", articleId)
                 .retrieve()
                 .body(ArticleResponse.class);
     }
 
     @Test
-    void updateTest() {
-        update(121530268440289280L);
-        ArticleResponse response = read(121530268440289280L);
+    void updateTest(){
+        update(257042675579404288L);
+        ArticleResponse response = read(257042675579404288L);
         System.out.println("response = " + response);
     }
 
     void update(Long articleId) {
         restClient.put()
-                .uri("/v1/articles/{articleId}", articleId)
-                .body(new ArticleUpdateRequest("hi 2", "my content 22"))
+                .uri("/v1/articles/{articleid}", articleId)
+                .body(new ArticleUpdateRequest("hi2","my content 2"))
                 .retrieve();
     }
 
     @Test
-    void deleteTest() {
+    void deleteTest(){
+        delete(257042675579404288L);
+        ArticleResponse response = read(257042675579404288L);
+        System.out.println("response = " + response);
+    }
+
+    void delete(Long articleId) {
         restClient.delete()
-                .uri("/v1/articles/{articleId}", 121530268440289280L)
+                .uri("/v1/articles/{articleid}", articleId)
                 .retrieve();
     }
 
     @Test
-    void readAllTest() {
+    void readAllTest(){
         ArticlePageResponse response = restClient.get()
-                .uri("/v1/articles?boardId=1&pageSize=30&page=50000")
+                .uri("/v1/articles?boardId=1&page=50000&pageSize=30")
                 .retrieve()
                 .body(ArticlePageResponse.class);
 
         System.out.println("response.getArticleCount() = " + response.getArticleCount());
         for (ArticleResponse article : response.getArticles()) {
-            System.out.println("articleId = " + article.getArticleId());
+            System.out.println("article = " + article.getArticleId());
         }
     }
 
@@ -102,28 +111,6 @@ public class ArticleApiTest {
         }
     }
 
-    @Test
-    void countTest() {
-        ArticleResponse response = create(new ArticleCreateRequest("hi", "content", 1L, 2L));
-
-        Long count1 = restClient.get()
-                .uri("/v1/articles/boards/{boardId}/count", 2L)
-                .retrieve()
-                .body(Long.class);
-        System.out.println("count1 = " + count1); // 1
-
-        restClient.delete()
-                .uri("/v1/articles/{articleId}", response.getArticleId())
-                .retrieve();
-
-        Long count2 = restClient.get()
-                .uri("/v1/articles/boards/{boardId}/count", 2L)
-                .retrieve()
-                .body(Long.class);
-        System.out.println("count2 = " + count2); // 0
-    }
-
-
     @Getter
     @AllArgsConstructor
     static class ArticleCreateRequest {
@@ -139,5 +126,6 @@ public class ArticleApiTest {
         private String title;
         private String content;
     }
+
 
 }
