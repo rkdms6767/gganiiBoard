@@ -1,8 +1,8 @@
 package gganii.board.article.data;
 
+import gganii.board.article.entity.Article;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import kuke.board.article.entity.Article;
 import kuke.board.common.snowflake.Snowflake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootTest
-public class DataInitializer {
+public class DataInitalizer {
     @PersistenceContext
     EntityManager entityManager;
     @Autowired
